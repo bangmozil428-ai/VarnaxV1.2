@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VarnaxVloid - Cek Nomor Penipuan</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+    body { background: linear-gradient(135deg, #0f172a, #1e293b); color: #fff; padding: 20px; }
+    .container { max-width: 600px; margin: 0 auto; background: #1e293b; padding: 25px; border-radius: 15px; box-shadow: 0 0 20px rgba(0,255,255,0.2); }
+    h1 { text-align: center; color: #38bdf8; margin-bottom: 5px; }
+    .by { text-align: center; font-size: 14px; color: #94a3b8; margin-bottom: 20px; }
+    input { width: 100%; padding: 12px; border-radius: 8px; border: none; margin: 10px 0; background: #334155; color: #fff; font-size: 16px; }
+    button { width: 100%; padding: 12px; border: none; border-radius: 8px; background: #38bdf8; color: #0f172a; font-weight: bold; font-size: 16px; cursor: pointer; margin-bottom: 15px; }
+    button:hover { background: #0ea5e9; }
+    .result { padding: 15px; border-radius: 8px; text-align: center; font-weight: bold; margin-top: 10px; }
+    .safe { background: #22c55e; }
+    .danger { background: #ef4444; }
+    .warning { background: #f59e0b; }
+    .footer { text-align: center; margin-top: 20px; font-size: 12px; color: #64748b; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🛡️ VarnaxVloid</h1>
+    <p class="by">by: Rizky Adrian Alifiandra</p>
+
+    <h3>Cek Nomor</h3>
+    <input type="text" id="nomor" placeholder="Masukkan nomor HP. Contoh: 08123456789">
+    <button onclick="cekNomor()">Cek Sekarang</button>
+    <div id="hasilNomor"></div>
+
+    <hr style="margin: 25px 0; border: 1px solid #334155;">
+
+    <h3>Laporkan Nomor Penipu</h3>
+    <input type="text" id="lapor" placeholder="Masukkan nomor penipu">
+    <button onclick="lapor()">Laporkan</button>
+    <div id="hasilLapor"></div>
+
+    <p class="footer">Database disimpan di browser kamu. Data tidak akan hilang saat di refresh.</p>
+  </div>
+
+<script>
+// LOAD DATA DARI PENYIMPAN HP BIAR GAK ILANG PAS REFRESH
+let daftarPenipu = JSON.parse(localStorage.getItem("varnaxData")) || ["08123456789", "08211122333", "08567890123"];
+
+function cekNomor() {
+  let n = document.getElementById("nomor").value.trim();
+  let hasil = document.getElementById("hasilNomor");
+  if(n === "") {
+    hasil.innerHTML = "Isi nomor dulu ya";
+    hasil.className = "result warning";
+    return;
+  }
+  if(daftarPenipu.includes(n)) {
+    hasil.innerHTML = "⚠️ BAHAYA! Nomor ini sudah dilaporkan penipuan";
+    hasil.className = "result danger";
+  } else {
+    hasil.innerHTML = "✅ Aman, belum ada laporan untuk nomor ini";
+    hasil.className = "result safe";
+  }
+}
+
+function lapor() {
+  let l = document.getElementById("lapor").value.trim();
+  let hasil = document.getElementById("hasilLapor");
+  if(l === "") {
+    hasil.innerHTML = "Isi nomor dulu ya";
+    hasil.className = "result warning";
+    return;
+  }
+  if(!daftarPenipu.includes(l)) {
+    daftarPenipu.push(l);
+    // SIMPAN KE PENYIMPAN HP
+    localStorage.setItem("varnaxData", JSON.stringify(daftarPenipu));
+    hasil.innerHTML = `✅ Terima kasih! Nomor ${l} sudah dilaporkan ke database. <br> Coba cek lagi sekarang.`;
+    hasil.className = "result safe";
+  } else {
+    hasil.innerHTML = "Nomor ini sudah ada di database kami";
+    hasil.className = "result warning";
+  }
+}
+</script>
+</body>
+</html>
